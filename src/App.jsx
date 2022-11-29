@@ -28,25 +28,34 @@ function App() {
       const count = exist?.countFood;
       const data = {
         ...exist,
-        price: exist.price + productFood.price,
         countFood: count + 1,
       };
       const filter = currentSale.filter(
         (current, index) => current.id !== productFood.id
       );
+
       setCurrentSale([...filter, data]);
     }
 
     toast.success("Você Adicionou ao Carrinho!");
   };
 
-  const removeCart = (productFoodId) => {
-    if (productFoodId.countFood === 1) {
-      const newArr = currentSale.filter((product) => product !== productFoodId);
+  const removeCart = (productFood) => {
+    if (productFood.countFood === 1) {
+      const newArr = currentSale.filter((product) => product !== productFood);
       setCurrentSale(newArr);
-    } else if (productFoodId.countFood > 1) {
-      const product = productFoodId.countFood - 1;
-      setCurrentSale([product]);
+    } else if (productFood.countFood > 1) {
+      const productIndex = currentSale.findIndex(
+        (current, index) => current.id === productFood.id
+      );
+
+      const newCurrentSale = [...currentSale];
+      const newProduct = {
+        ...productFood,
+        countFood: productFood.countFood - 1,
+      };
+      newCurrentSale[productIndex] = newProduct;
+      setCurrentSale(newCurrentSale);
     }
 
     toast.warn("Você Removeu do Carrinho!");
@@ -73,8 +82,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const sumCartTotal = currentSale.reduce((acc, { price }) => {
-      return acc + Number(price);
+    const sumCartTotal = currentSale.reduce((acc, { price, countFood }) => {
+      return acc + Number(price) * Number(countFood);
     }, 0);
 
     setCartTotal(sumCartTotal);
