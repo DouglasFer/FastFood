@@ -8,9 +8,10 @@ export const Card = ({ currentSale, removeCart }) => {
         <DivNameCategory>
           <p>{currentSale.name}</p>
           <span>{currentSale.category}</span>
+          <span>{currentSale.countFood} unidade(s)</span>
         </DivNameCategory>
       </ContentCard>
-      <button onClick={() => removeCart(currentSale.id)}>Remover</button>
+      <button onClick={() => removeCart(currentSale)}>Remover</button>
     </LiCard>
   );
 };

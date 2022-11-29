@@ -8,6 +8,8 @@ import {
 import GlobalStyle from "./styles/globalStyle";
 import { Cart } from "./componentes/cart/cart";
 import { ContainerPage, ContentPage } from ".";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -15,28 +17,47 @@ function App() {
   const [cartTotal, setCartTotal] = useState(0);
   const [products, setProducts] = useState([]);
 
-  function addCart(productFood) {
-    if (
-      !currentSale.some(
-        (currentProduct) => currentProduct.id === productFood.id
-      )
-    ) {
-      setCurrentSale([...currentSale, productFood]);
-    }
-  }
-  function removeCart(productFoodId) {
-    const newArr = currentSale.filter(
-      (product) => product.id !== productFoodId
+  const addCart = (productFood) => {
+    const exist = currentSale.find(
+      (current, index) => current.id === productFood.id
     );
-    setCurrentSale(newArr);
-  }
 
-  const filterCard = products.filter(
-    (product) =>
-      product.category
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "") === filteredProducts
+    if (!exist) {
+      setCurrentSale([...currentSale, { ...productFood, countFood: 1 }]);
+    } else {
+      const count = exist?.countFood;
+      const data = {
+        ...exist,
+        price: exist.price + productFood.price,
+        countFood: count + 1,
+      };
+      const filter = currentSale.filter(
+        (current, index) => current.id !== productFood.id
+      );
+      setCurrentSale([...filter, data]);
+    }
+
+    toast.success("Você Adicionou ao Carrinho!");
+  };
+
+  const removeCart = (productFoodId) => {
+    if (productFoodId.countFood === 1) {
+      const newArr = currentSale.filter((product) => product !== productFoodId);
+      setCurrentSale(newArr);
+    } else if (productFoodId.countFood > 1) {
+      const product = productFoodId.countFood - 1;
+      setCurrentSale([product]);
+    }
+
+    toast.warn("Você Removeu do Carrinho!");
+  };
+
+  const filterCard = products.filter((product) =>
+    product.category
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .includes(filteredProducts)
   );
 
   useEffect(() => {
@@ -77,6 +98,18 @@ function App() {
           currentSale={currentSale}
           removeCart={removeCart}
           cartTotal={cartTotal}
+        />
+        <ToastContainer
+          position="bottom-center"
+          autoClose={2500}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
         />
       </ContentPage>
     </ContainerPage>

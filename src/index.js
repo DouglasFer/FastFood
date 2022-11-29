@@ -24,7 +24,7 @@ export const ContainerPage = styled.div`
   align-items: center;
 `;
 export const ContentPage = styled.div`
-  width: 100%;
+  width: 93%;
   max-width: 1300px;
   display: flex;
   justify-content: space-between;

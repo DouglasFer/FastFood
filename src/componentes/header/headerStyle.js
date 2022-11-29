@@ -16,7 +16,7 @@ export const ContainerHeader = styled.div`
 export const ContentHeader = styled.div`
   display: flex;
   width: 1300px;
-  max-width: 100%;
+  max-width: 90%;
   justify-content: space-between;
   align-items: center;
 
